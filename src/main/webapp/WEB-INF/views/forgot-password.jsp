@@ -1,0 +1,166 @@
+<%@ page contentType="text/html;charset=UTF-8" isELIgnored="true" %>
+<html>
+
+<head>
+<title>Forgot Password | Grocery App</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f5f5;
+margin:0;
+}
+
+header{
+background:#2e7d32;
+color:white;
+padding:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+header a{
+color:white;
+text-decoration:none;
+font-weight:bold;
+margin-right:10px;
+}
+
+header a:hover{
+text-decoration: underline;
+opacity: 0.9;
+}
+
+.container{
+display:flex;
+justify-content:center;
+align-items:center;
+height:85vh;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:8px;
+box-shadow:0 0 8px rgba(0,0,0,0.2);
+width:320px;
+}
+
+h2{
+text-align:center;
+color:#2e7d32;
+}
+
+input{
+width:100%;
+padding:8px;
+margin-top:5px;
+margin-bottom:10px;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#2e7d32;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+.msg{
+color:red;
+font-weight:bold;
+text-align:center;
+}
+
+.success{
+color:green;
+font-weight:bold;
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<div>
+<a href="/">Home</a>
+</div>
+<div>
+<a href="/login">Login</a>
+</div>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Forgot Password</h2>
+
+<form id="forgotForm">
+
+Enter your Email
+<input type="email" id="email" required>
+
+<button type="submit">Send Reset Link</button>
+
+</form>
+
+<p class="msg" id="errorMsg"></p>
+<p class="success" id="successMsg"></p>
+
+</div>
+
+</div>
+
+<script>
+
+forgotForm.onsubmit=function(e){
+
+e.preventDefault();
+
+fetch("/api/users/forgot-password",{
+
+method:"POST",
+
+  headers:{
+    "Content-Type":"application/json"
+  },
+
+  body: JSON.stringify({
+    userEmail: email.value
+  })
+
+})
+
+.then(res=>{
+
+if(!res.ok){
+return res.text().then(m=>{throw new Error(m)});
+}
+
+return res.text();
+
+})
+
+.then(msg=>{
+successMsg.innerText=msg || "Reset link sent to your email!";
+errorMsg.innerText="";
+})
+
+.catch(err=>{
+errorMsg.innerText=err.message;
+successMsg.innerText="";
+});
+
+};
+
+</script>
+
+</body>
+</html>

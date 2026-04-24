@@ -1,0 +1,145 @@
+<%@ page contentType="text/html;charset=UTF-8" isELIgnored="true" %>
+    <html>
+
+    <head>
+
+        <title>Signup | Grocery App</title>
+
+        <link rel="stylesheet" href="/style.css">
+
+          
+
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <header>
+
+            <div>
+
+                <a href="/">Home</a>
+
+            </div>
+
+            <div>
+
+                <span id="welcome"></span>
+
+            </div>
+
+        </header>
+        <div class="Login">
+            <div class="Login-cart">
+
+                <h2>Signup</h2>
+
+                <form id="signupForm">
+
+                    Name
+                    <input type="text" id="name" required>
+
+                    Email
+                    <input type="text" id="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required>
+
+                    Password
+                    <input type="password" id="password" required>
+
+                    Phone
+                    <input type="tel" id="phone" pattern="[0-9]{10}" required>
+
+                    City
+                    <input type="text" id="city" pattern="[A-Za-z ]{2,}" required>
+
+                    <button type="submit" class="logBtn">
+                        Signup
+                    </button>
+
+                </form>
+
+                <p class="msg" id="message"></p>
+
+                <p>
+
+                    Already have account?
+
+                    <a href="/login">Login</a>
+
+                </p>
+
+            </div>
+        </div>
+
+
+        <script>
+            const name = localStorage.getItem("username");
+
+            if (name) {
+
+                welcome.innerHTML = "👋 " + name;
+
+            }
+
+            document.getElementById("signupForm")
+                .addEventListener("submit", function (e) {
+
+                    e.preventDefault();
+
+                    const data = {
+
+                        name: name.value,
+                        email: email.value,
+                        password: password.value,
+                        phone: phone.value,
+                        city: city.value
+
+                    };
+
+                    fetch("/api/users", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(data)
+
+                    })
+
+                        .then(res => {
+
+                            if (!res.ok) {
+
+                                return res.text().then(m => {
+                                    throw new Error(m);
+                                });
+
+                            }
+
+                            return res.text();
+
+                        })
+
+                        .then(() => {
+
+                            alert("Signup success");
+                            window.location = "/login";
+
+                        })
+
+                        .catch(err => {
+
+                            message.innerText = err.message;
+
+                        });
+
+                });
+
+        </script>
+
+    </body>
+
+    </html>

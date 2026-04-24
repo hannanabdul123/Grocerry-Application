@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Custom finder method
     Optional<User> findByUserEmail(String UserEmail);
+    void deleteById(Long Id);
 }

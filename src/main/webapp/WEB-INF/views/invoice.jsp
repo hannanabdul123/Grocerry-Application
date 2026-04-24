@@ -1,0 +1,264 @@
+<%@ page contentType="text/html;charset=UTF-8" isELIgnored="true" %>
+<html>
+
+<head>
+
+<title>Invoice</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f5f5;
+margin:0;
+}
+
+.invoice-box{
+
+max-width:900px;
+margin:30px auto;
+padding:20px;
+background:white;
+border-radius:8px;
+box-shadow:0 0 6px rgba(0,0,0,0.2);
+
+}
+
+.header{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+}
+
+.title{
+
+font-size:22px;
+font-weight:bold;
+color:#2e7d32;
+
+}
+
+.status{
+
+color:green;
+font-weight:bold;
+
+}
+
+table{
+
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+
+}
+
+th{
+
+background:#2e7d32;
+color:white;
+padding:10px;
+
+}
+
+td{
+
+padding:10px;
+border:1px solid #ddd;
+
+}
+
+.right{
+
+text-align:right;
+
+}
+
+.btn{
+
+padding:8px 12px;
+border:none;
+cursor:pointer;
+margin-top:10px;
+
+}
+
+.printBtn{
+
+background:#2e7d32;
+color:white;
+
+}
+
+.backBtn{
+
+background:#555;
+color:white;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="invoice-box">
+
+<div class="header">
+
+<div class="title">
+🧾 Invoice
+</div>
+
+<div class="status" id="paymentStatus"></div>
+
+</div>
+
+
+<p><b>Invoice Number:</b>
+<span id="invoiceNumber"></span></p>
+
+<p><b>Invoice Date:</b>
+<span id="invoiceDate"></span></p>
+
+<p><b>Order ID:</b>
+<span id="orderId"></span></p>
+
+
+<hr>
+
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Product</th>
+<th>Price</th>
+<th>Qty</th>
+<th>Total</th>
+
+</tr>
+
+</thead>
+
+<tbody id="items"></tbody>
+
+</table>
+
+
+<h3 class="right">
+
+Grand Total ₹
+<span id="grandTotal"></span>
+
+</h3>
+
+
+<button class="btn printBtn"
+onclick="window.print()">
+
+Print Invoice
+
+</button>
+
+
+<button class="btn backBtn"
+onclick="goBack()">
+
+Back to Orders
+
+</button>
+
+
+</div>
+
+
+<script>
+
+const token=localStorage.getItem("token");
+
+if(!token){
+
+alert("Login first");
+window.location="/login";
+
+}
+
+
+const params=new URLSearchParams(window.location.search);
+
+const orderId=params.get("orderid");
+
+
+fetch(`/api/invoice/${orderId}`,{
+
+headers:{
+'Authorization':'Bearer '+token
+}
+
+})
+
+.then(res=>res.json())
+
+.then(invoice=>{
+
+document.getElementById("invoiceNumber")
+.innerText=invoice.invoiceNumber;
+
+document.getElementById("invoiceDate")
+.innerText=invoice.invoiceDate;
+
+document.getElementById("orderId")
+.innerText=invoice.order.id;
+
+document.getElementById("grandTotal")
+.innerText=invoice.amount;
+
+document.getElementById("paymentStatus")
+.innerText=invoice.order.paymentStatus;
+
+
+const items=invoice.order.orderItems;
+
+const body=document.getElementById("items");
+
+
+items.forEach(item=>{
+
+const row=document.createElement("tr");
+
+row.innerHTML=`
+
+<td>${item.productName}</td>
+
+<td>₹ ${item.price}</td>
+
+<td>${item.quantity}</td>
+
+<td>₹ ${item.price*item.quantity}</td>
+
+`;
+
+body.appendChild(row);
+
+});
+
+});
+
+
+function goBack(){
+
+window.location="/orders";
+
+}
+
+</script>
+
+</body>
+
+</html>

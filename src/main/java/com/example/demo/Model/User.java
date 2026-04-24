@@ -4,6 +4,9 @@ package com.example.demo.Model;
 import javax.persistence.*;
 
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Email;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -17,22 +20,86 @@ public class User {
 
     @Column(nullable = false)
     private String name;
+
+    @NotBlank(message = "Email is required")
+@Email(message = "Invalid email format")
     @Column(nullable = false, unique = true)
-    private String userEmail;
+    @JsonProperty("email")
+private String userEmail;
 
     @Column(nullable = false)
     @JsonProperty(access=JsonProperty.Access.WRITE_ONLY)
     private String password;
+    @Pattern(regexp = "^[0-9]{10}$")
+    private String phone;
+    private String address;
+     @NotBlank
+    private String city;
+    @Pattern(regexp = "^[0-9]{6}$")
+    private String pincode;
+@Enumerated(EnumType.STRING)
+@Column(nullable = false)
+private Role role= Role.USER; ;
 
-    @Column(nullable = false)
-    private String role; // ADMIN / USER
+@Column(nullable = false)
+private boolean active = true;
+// ADMIN / USER
+    public String getPhone() {
+    return phone;
+}
+
+   public void setPhone(String phone) {
+    this.phone = phone;
+   }
+
+   public String getAddress() {
+    return address;
+   }
+
+   public void setAddress(String address) {
+    this.address = address;
+   }
+
+   public String getCity() {
+    return city;
+   }
+
+   public void setCity(String city) {
+    this.city = city;
+   }
+
+   public String getPincode() {
+    return pincode;
+   }
+
+   public void setPincode(String pincode) {
+    this.pincode = pincode;
+   }
+
+   public void setRole(Role role) {
+    this.role = role;
+   }
+
+   
     
+
+    public Role getRole() { 
+    return role;
+}
+
+   public boolean isActive() {
+    return active;
+   }
+
+   public void setActive(boolean active) {
+    this.active = active;
+   }
 
     public User(){
 
     }
 
-    public User(String name, String email, String password, String role) {
+    public User(String name, String email, String password, Role role) {
         this.name = name;
         this.userEmail = email;
         this.password = password;
@@ -72,14 +139,7 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
+    
 
     
 

@@ -41,24 +41,29 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
             String token = authHeader.substring(7);
-            String email = jwtUtil.extractEmail(token);
+            try{
 
+            String email = jwtUtil.extractEmail(token);
+            String role=jwtUtil.extractRole(token);
             User user = userRepository.findByUserEmail(email).orElse(null);
 
             if (user != null) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                user.getUserEmail(),
+                                email,
                                 null,
                                 Collections.singletonList(
-                new SimpleGrantedAuthority(user.getRole())
+                new SimpleGrantedAuthority(role)
             )
                         );
 
                 SecurityContextHolder.getContext()
                         .setAuthentication(authentication);
             }
+        } catch(Exception e){
+            System.out.println("Inavlid JWT token: "+e.getMessage());
         }
+    }
         filterChain.doFilter(request, response);
     }
 }

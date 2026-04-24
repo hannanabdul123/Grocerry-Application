@@ -1,26 +1,53 @@
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Security\JwtAuthFilter.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Exception\GlobalException.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Model\Cart.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Model\User.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Service\ProductServiceImpl.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Service\UserService.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Model\Order.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\config\PasswordConfig.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\GroceryApplication.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Repository\ProductRepository.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Security\JwtUtil.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Service\UserServiceImpl.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\config\SecurityConfig.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Model\LoginRequest.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Controller\OrderController.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Model\Product.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Service\ProductService.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Model\OrderItem.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Repository\UserRepository.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Repository\OrderRepository.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Controller\CartController.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Controller\ProductController.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Service\OrderService.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Repository\CartRepository.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Controller\UserController.java
-D:\Java & Spring Boot Programs\Online Grocery App\src\main\java\com\example\demo\Service\CartService.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\GroceryApplication.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\DTO\UserProfileResponse.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\Role.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\CartController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\DTO\ChangePasswordRequest.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\OrderItem.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\ProductServiceImpl.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\AdminController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\DTO\UpdateProfileRequest.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\MessageController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\UserService.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\UserController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Repository\ProductRepository.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Repository\CartRepository.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\ProductController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\DTO\ResetPasswordRequest.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\AuthController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\Cart.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\OrderController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\Order.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\PageController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\InvoiceController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\OrderStatus.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\User.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\Invoice.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Repository\OrderRepository.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Repository\MessageRepo.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\DTO\LoginResponse.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\UserServiceImpl.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\AdminOrderController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Security\JwtUtil.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\InvoiceService.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\config\SecurityConfig.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\PasswordResetService.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\Product.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Security\JwtAuthFilter.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\DTO\chatuserDTO.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\OrderService.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Repository\InvoiceRepository.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\LoginRequest.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Exception\GlobalException.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\PasswordResetToken.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\DTO\ForgotPasswordRequest.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\PaymentStatus.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\DTO\AdminUserResponse.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Repository\PasswordResetTokenRepository.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\Messages.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\MessageService.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\config\WebConfig.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Repository\UserRepository.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\config\PasswordConfig.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\ProductService.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\CartService.java

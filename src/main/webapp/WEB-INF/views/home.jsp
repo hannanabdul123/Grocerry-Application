@@ -1,0 +1,591 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8" isELIgnored="true" %>
+    <html>
+
+    <head>
+        <title>Online Grocery App</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="/style.css">
+
+
+
+    </head>
+
+    <body>
+
+        <header>
+
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+            <!-- 🔥 Nav Links -->
+            <nav id="navLinks">
+                <a href="/">Home</a>
+                <a href="/cart">Cart</a>
+                <a href="/orders">Orders</a>
+                <a href="/login">Login</a>
+                <a href="/signup">SignUp</a>
+                <a href="/admin">Admin</a>
+                <a href="#" onclick="logout()">Logout</a>
+
+            </nav>
+
+            <span id="welcome"></span>
+            <button id="chatBtn" onclick="openChat()">💬</button>
+            <div id="chatPanel" class="chat-panel">
+                <!-- Close Button -->
+                <button onclick="closeChat()">❌</button>
+            </div>
+
+
+        </header>
+
+        <div id="container">
+
+            <h2>🛒 Online Grocery Store</h2>
+
+            <!-- ✅ ADMIN ADD BUTTON -->
+            <button id="addBtn" class="adminBtn" style="display:none;">+ Add Product</button>
+
+            <!-- ✅ ADD PRODUCT FORM -->
+            <div id="formDiv" class="hidden">
+                <button type="button" class="closeBtn" onclick="closeForm()">❌</button>
+                <h3>Add Product</h3>
+
+                <form id="productForm">
+                    <label>Name</label>
+                    <input type="text" name="name" required>
+
+                    <label>Price</label>
+                    <input type="number" step="0.01" name="price" required>
+
+                    <label>Image</label>
+                    <input type="file" name="image">
+
+                    <label>Quantity</label>
+                    <input type="text" name="category" required>
+
+                    <label>Description</label>
+                    <input type="text" name="description" required>
+
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+
+            <div id="productList"></div>
+
+        </div>
+        <footer>
+            <div class="footer-container">
+
+                <div class="footer-section">
+                    <h3>🛒 Grocery Store</h3>
+                    <p>Fresh groceries delivered at your doorstep</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <div class="fa">
+                        <a href="/">Home</a><br>
+                        <a href="/cart">Cart</a><br>
+                        <a href="/orders">Orders</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <p>Fruits</p>
+                    <p>Vegetables</p>
+                    <p>Dairy</p>
+                    <p>Snacks</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: support@grocery.com</p>
+                    <p>Phone: +91 9876543210</p>
+                </div>
+
+            </div>
+
+            <p class="footer-bottom">© 2026 Grocery Store | All Rights Reserved</p>
+        </footer>
+        <script>
+            const currentUserId = parseInt(localStorage.getItem("userId"));
+            let chatInterval = null;
+            const token = localStorage.getItem("token");
+            const role = localStorage.getItem("role");
+            const username = localStorage.getItem("username");
+            const adminId = 10;
+            function openChat() {
+                const panel = document.getElementById("chatPanel");
+
+                fetch("/message") // controller call
+                    .then(res => res.text())
+                    .then(html => {
+                        panel.innerHTML = html;
+                        panel.classList.add("chat-visible");
+
+                        if (role === "ADMIN") {
+                            loadUsers();
+                        }
+
+                        if (role !== "ADMIN") {
+                            const userList = document.getElementById("userList");
+                            if (userList) userList.style.display = "none";
+                            const input = document.getElementById("msgInput");
+                            input.disabled = false;
+                            input.placeholder = "Type message...";
+                            const chatRight = document.querySelector(".chat-right");
+                            chatRight.style.width = "100%";
+                            selectedUserId = adminId;   // user always chats with admin
+                            loadMessages();
+                        }
+
+
+
+                        if (!chatInterval) {
+                            chatInterval = setInterval(loadMessages, 3000);
+                        }
+                    });
+            }
+
+            function closeChat() {
+
+                const panel = document.getElementById("chatPanel");
+                panel.classList.remove("chat-visible");
+                panel.innerHTML = "";
+                clearInterval(chatInterval);
+                chatInterval = null;
+            }
+
+
+            if (!currentUserId) {
+                alert("User not logged in");
+                throw new Error("UserId missing");
+            }
+
+
+            function handleEnter(e) {
+                if (e.key === "Enter") {
+                    sendMsg();
+                }
+            }
+            let selectedUserId = null;
+            // Assuming admin has ID 10 for demo purposes
+            function sendMsg() {
+                const msg = document.getElementById("msgInput").value.trim();
+
+
+
+                if (!token) {
+                    alert("Please login to send messages.");
+                    return;
+                }
+                let senderId, receiverId;
+                if (role === "ADMIN") {
+
+                    if (!selectedUserId) {
+                        alert("Select user first.");
+                        return;
+                    }
+                    senderId = adminId;
+                    receiverId = selectedUserId;
+                } else {
+                    senderId = currentUserId;
+                    receiverId = adminId;
+                }
+                fetch("/api/chat/send", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        senderId: senderId,
+                        receiverId: receiverId,
+                        msgContent: msg
+                    })
+                })
+                    .then(res => {
+                        if (!res.ok) {
+                            return res.text().then(errData => {
+                                throw new Error(errData.message || "Failed to send message");
+                            });
+
+                        }
+                        return res.text();
+                    })
+                    .then(() => {
+
+                        document.getElementById("msgInput").value = "";
+                        loadMessages();
+
+                    })
+                    .catch(err => {
+                        console.error("Send error:", err);
+                        alert(err.message);
+                    });
+
+
+            }
+
+            function loadUsers() {
+
+                if (role !== "ADMIN") return;
+
+               fetch("/api/chat/chat-users?adminId=" + adminId)
+                    .then(res => res.json())
+                    .then(users => {
+                        const list = document.getElementById("userList");
+                        list.innerHTML = "";
+                        users.forEach(u => {
+
+                            const btn = document.createElement("button");
+                        
+                          
+                            btn.innerText = "👤 " + u.name+"(ID: " + u.userId + ")"; // Assuming u has a getName() method
+                            btn.className = "userBtn";
+
+                            btn.onclick = () => {
+                                selectedUserId = u.userId;
+                                document.querySelectorAll(".userBtn").forEach(b => b.classList.remove("activeUser"));
+                                btn.classList.add("activeUser");
+
+                                // Input enable karo
+                                const input = document.getElementById("msgInput");
+                                input.disabled = false;
+                                input.placeholder = "Type message...";
+
+                                loadMessages();
+                            };
+                            list.appendChild(btn);
+                        });
+                    });
+            }
+
+            function loadMessages() {
+                if (!selectedUserId) return;
+                if (!token) return;
+
+                let user_Id;
+                if (role === "ADMIN") {
+                    if (!selectedUserId) return;
+                    user_Id = selectedUserId;
+                } else {
+                    user_Id = currentUserId;
+                }
+
+                fetch(`/api/chat/getchat?userId=${user_Id}&adminId=${adminId}`, {
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                })
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error("Failed to load messages");
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        const box = document.getElementById("chatMessages");
+                        if (!data || data.length === 0) {
+                            box.innerHTML = "<p class='no-msg'>No messages yet...</p>";
+                            return;
+                        }
+                        box.innerHTML = "";
+
+                        data.forEach(m => {
+                            const div = document.createElement("div");
+                            let timeStr = "";
+                            if (m.timestamp) {
+                                const date = new Date(m.timestamp);
+                                timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            }
+
+
+                            if (m.senderId === (role === "ADMIN" ? adminId : currentUserId)) {
+                                div.className = "msg-user";
+                                div.innerHTML = `
+                        <div>${m.msgContent || ""}</div>
+                        <div class="msg-time">${timeStr} ✓</div>`;  // right
+                            } else {
+                                div.className = "msg-admin";  // left
+                                div.innerHTML = `
+                        <div><b>${m.senderName || "Unknown User"}:</b> ${m.msgContent || ""}</div>
+                        <div class="msg-time">${timeStr}</div>`;
+                            }
+
+
+                            box.appendChild(div);
+                        });
+                        box.scrollTop = box.scrollHeight;
+                    })
+                    .catch(err => {
+                        console.error("Load error:", err);
+                    });
+            }
+
+            // Auto refresh
+
+
+            document.getElementById("formDiv").addEventListener("click", function (e) {
+                if (e.target === this) {
+                    this.classList.add("hidden");
+                }
+            });
+
+            function toggleMenu() {
+                const nav = document.getElementById("navLinks");
+                nav.classList.toggle("active");
+            }
+
+            let updateProductId = null;
+
+
+            if (username) {
+                document.getElementById("welcome").innerText = "👋 " + username;
+            }
+
+            // ✅ Show Add Button only for ADMIN
+            if (role === "ADMIN") {
+                document.getElementById("addBtn").style.display = "block";
+            }
+
+            function editProduct(product) {
+
+                updateProductId = product.product_id;
+
+                document.getElementById("formDiv").style.display = "block";
+
+                const form = document.getElementById("productForm");
+                form.reset();
+                form.name.value = product.name;
+                form.price.value = product.price;
+                form.description.value = product.description;
+                form.category.value = product.category;
+
+
+
+                document.querySelector("#formDiv h3").innerText = "Update Product";
+                formDiv.scrollIntoView({ behavior: "smooth" });
+
+                document.querySelector("#productForm input[name='name']").focus();
+
+
+            }
+
+            // ✅ Toggle Form
+
+            document.getElementById("addBtn").addEventListener("click", () => {
+                const formDiv = document.getElementById("formDiv");
+
+                formDiv.classList.toggle("hidden");
+
+                if (!formDiv.classList.contains("hidden")) {
+                    formDiv.scrollIntoView({ behavior: "smooth" });
+                    document.querySelector("#productForm input[name='name']").focus();
+
+                }
+            });
+
+
+
+            // ✅ LOAD PRODUCTS
+            function loadProducts() {
+
+                fetch('/api/products/allproducts')
+                    .then(res => res.json())
+                    .then(products => {
+
+                        const list = document.getElementById("productList");
+                        list.innerHTML = "";
+
+                        products.forEach(product => {
+                            console.log("IMAGE URL =", product.imageUrl);
+
+                            let cleanImage = product.imageUrl;
+                            if (cleanImage) {
+                                // remove "/uploads/" if present
+                                cleanImage = cleanImage.replace("/upload/", "");
+                            }
+
+                            if (cleanImage && cleanImage.startsWith("/")) {
+                                cleanImage = cleanImage.substring(1);
+                            }
+                            let imageTag = "";
+                            if (cleanImage) {
+                                imageTag = `<img src="/images/${cleanImage}" width="150" loading="lazy">`;
+                            }
+
+                            let deleteBtn = "";
+
+                            // ✅ ADMIN DELETE BUTTON
+                            if (role === "ADMIN") {
+                                deleteBtn = `<button class="deleteBtn" onclick="deleteProduct('${product.product_id}')">Delete</button>`;
+                            }
+                            let updateBtn = "";
+
+                            if (role === "ADMIN") {
+                                updateBtn = `<button class="updateBtn" onclick='editProduct(${JSON.stringify(product)})'>
+    Update</button>`;
+                            }
+
+                            const div = document.createElement("div");
+                            div.className = "cart";
+
+                            div.innerHTML = `
+                <h3>${product.name}</h3>
+            
+              
+                ${imageTag}
+                <p class="description">${product.description}</p>   
+                <p class="category">${product.category}</p>
+                <p class="price">₹ ${product.price}</p>
+             
+                <button class="addBtn" onclick="addToCart('${product.product_id}')">
+                    Add to Cart
+                </button>
+                ${updateBtn}
+                ${deleteBtn}
+            `;
+
+                            list.appendChild(div);
+                        });
+                    });
+            }
+
+
+            // ✅ DELETE PRODUCT
+            function deleteProduct(product_id) {
+
+                if (!confirm("Delete this product?")) return;
+
+                fetch(`/api/admin/delete/${product_id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                    .then(res => {
+                        console.log("STATUS =", res.status);
+
+                        if (!res.ok) {
+                            return res.text().then(err => {
+                                throw new Error(err || "Something went wrong");
+                            });
+                        }
+
+                        return res.text();
+
+
+                    })
+                    .then(() => {
+                        alert("Deleted!");
+                        loadProducts();
+                    })
+                    .catch(err => {
+                        console.error("ERROR =", err.message);
+                        alert("Error: " + err.message);
+                    });
+            }
+
+
+            // ✅ ADD PRODUCT
+            document.getElementById("productForm").addEventListener("submit", function (e) {
+
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                let url = '/api/admin/add';
+
+                if (updateProductId) {
+                    url = `/api/admin/update/${updateProductId}`;
+                }
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: formData
+                })
+                    .then(res => {
+
+                        console.log("STATUS =", res.status);
+
+                        if (!res.ok) {
+                            return res.text().then(err => {
+                                throw new Error(err || "Something went wrong");
+                            });
+                        }
+
+                        return res.text();
+                    })
+                    .then(() => {
+                        alert(updateProductId ? "Product Updated!" : "Product Added!");
+
+                        updateProductId = null;
+                        formDiv.classList.add("hidden");
+
+                        loadProducts();
+                    })
+                    .catch(err => {
+                        console.error("ERROR =", err.message);
+                        alert("Error: " + err.message);
+                    });
+
+            });
+
+
+            // ✅ ADD TO CART (same as before)
+            function addToCart(product_id) {
+
+
+                if (!token) {
+                    alert("Login First");
+                    window.location = "/login";
+                    return;
+                }
+
+                fetch(`/api/cart/add/${product_id}?quantity=1`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                })
+                    .then(res => {
+                        console.log("STATUS =", res.status);
+
+                        if (!res.ok) {
+                            return res.text().then(err => {
+                                throw new Error(err || "Something went wrong");
+                            });
+                        }
+
+                        return res.text();
+                    })
+                    .then(() => alert("Added to cart"))
+                    .catch(err => {
+                        console.error("ERROR =", err.message);
+                        alert("Error: " + err.message);
+                    });
+            }
+
+            function logout() {
+
+                localStorage.clear();
+                sessionStorage.clear();
+
+                alert("Logged out");
+                window.location = "/login";
+            }
+
+            // ✅ INITIAL LOAD
+            loadProducts();
+            loadUsers();
+
+        </script>
+
+    </body>
+
+    </html>

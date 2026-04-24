@@ -17,12 +17,31 @@ public class Product {
     private double price;
     private int quantity;
     private String category;
+    private String description;
+    public String getCategory() {
+        return category;
+    }
+    public void setCategory(String category) {
+        this.category = category;
+    }
+    private String imageUrl;
+    public Product() {
+        
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+ 
 
-
-   
- public Product(){
-
- }
     public Long getProduct_id() {
         return product_id;
     }
@@ -30,10 +49,11 @@ public class Product {
         this.product_id = product_id;
     }
    
-    public Product(String name, double price, int quantity, String category) {
+    public Product(String name, double price, int quantity, String description, String category) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+        this.description = description;
         this.category = category;
     }
     public Long getId() {
@@ -60,11 +80,7 @@ public class Product {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    public String getCategory() {
-        return category;
-    }
-    public void setCategory(String category) {
-        this.category = category;
-    }
+   
+    
     
 }

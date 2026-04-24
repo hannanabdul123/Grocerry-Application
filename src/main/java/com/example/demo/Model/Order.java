@@ -5,6 +5,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +18,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "orders")
+
 public class Order {
 
     @Id
@@ -23,14 +27,41 @@ public class Order {
 
     private LocalDateTime orderDate;
 
-   
+    
     private double totalAmount;
     @ManyToOne
     @JoinColumn(name="user_id",nullable = false)
+    
     private User user;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true,
+    fetch = FetchType.LAZY)
+     private List<OrderItem> orderItems;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private  OrderStatus orderStatus;
 
+   @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+private PaymentStatus paymentStatus;
+   
+
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
 
     public Long getId() {
         return id;

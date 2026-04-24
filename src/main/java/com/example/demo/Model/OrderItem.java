@@ -2,6 +2,8 @@ package com.example.demo.Model;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
@@ -20,6 +22,7 @@ private String productName;
     // Each order item belongs to one order
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonBackReference
     private Order order;
 
     public OrderItem() {}

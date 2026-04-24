@@ -11,7 +11,8 @@ import com.example.demo.Model.Cart;
 import com.example.demo.Model.Order;
 
 import com.example.demo.Model.OrderItem;
-import com.example.demo.Model.Product;
+import com.example.demo.Model.OrderStatus;
+import com.example.demo.Model.PaymentStatus;
 import com.example.demo.Model.User;
 import com.example.demo.Repository.CartRepository;
 import com.example.demo.Repository.OrderRepository;
@@ -25,14 +26,17 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final CartRepository cartRepository;
   private final UserRepository userRepository;
+  private final InvoiceService invoiceService;
 
     public OrderService(OrderRepository orderRepository,
                         CartRepository cartRepository,
-                        UserRepository userRepository) {
+                        UserRepository userRepository,InvoiceService invoiceService) {
         this.orderRepository = orderRepository;
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
+        this.invoiceService=invoiceService;
     } 
+    
 @Transactional
   public Order placeOrder(String email){
       User user = userRepository.findByUserEmail(email)
@@ -42,7 +46,7 @@ public class OrderService {
                 if (cartItems.isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
-    double total=cartItems.stream()
+  double total=cartItems.stream()
                  .mapToDouble(item -> item.getQuantity() * item.getProduct().getPrice())
                  .sum();
 
@@ -50,7 +54,12 @@ public class OrderService {
                 order.setUser(user); 
                  order.setTotalAmount(total);
                  order.setOrderDate(LocalDateTime.now());
-        
+             
+               order.setOrderStatus(OrderStatus.PLACED);
+               order.setPaymentStatus(PaymentStatus.PENDING);
+               
+                //Create Orderitems with Valid order_id
+
                  List<OrderItem> orderitems=cartItems.stream().map(cart->
                   {
                     OrderItem item=new OrderItem();
@@ -66,16 +75,73 @@ public class OrderService {
 
                  order.setOrderItems(orderitems);
       
-                 //Save Order
-                Order savedOrder=orderRepository.save(order); 
+                 //Save Order 
                  
-                 //Clear Cart
+                Order finalOrder=orderRepository.save(order); 
+                 
                  cartRepository.deleteByUser_userEmail(email);
               
-          return savedOrder;
+          return finalOrder;
   }
   public List<Order> getOrders(String email){
     return orderRepository.findByUser_userEmail(email);
   
 }
+public List<Order> getOrdersByuserId(Long userId){
+       System.out.println("UserId: "+userId);
+    List<Order> list =
+        orderRepository.getOrdersByuserId(userId);
+
+    System.out.println("Orders size from service= " + list.size());
+ List<Order> all =
+        orderRepository.findAll();
+
+    System.out.println("All orders = " + all.size());
+    return list;
+}
+
+public Order makePaymentDone(Long orderId){
+  Order order=orderRepository.findById(orderId)
+  .orElseThrow(()-> new RuntimeException("Order not found"));
+
+  //Status will change here
+  order.setPaymentStatus(PaymentStatus.SUCCESS);
+  order.setOrderStatus(OrderStatus.CONFIRMED);
+  
+    orderRepository.save(order);
+  invoiceService.generatInvoice(order);
+  return order;
+}
+public Order shipOrder(Long orderId){
+  Order order=orderRepository.findById(orderId)
+              .orElseThrow(()-> new RuntimeException("Order not found!"));
+              order.setOrderStatus(OrderStatus.SHIPPED);
+              return orderRepository.save(order);
+}
+public Order deliverOrder(Long orderId){
+ Order order=orderRepository.findById(orderId)
+              .orElseThrow(()-> new RuntimeException("Order not found!"));
+              
+              if(order.getPaymentStatus()!=PaymentStatus.SUCCESS){
+                throw new RuntimeException("UnPaid order cannot be Deliver!");
+              }
+              if(order.getOrderStatus()!=OrderStatus.SHIPPED){
+                throw new RuntimeException("Order should be shipped first!");
+              }
+             order.setOrderStatus(OrderStatus.DELIVERED);
+             return orderRepository.save(order);
+}
+public Order cancelOrder(Long orderId){
+
+  Order order=orderRepository.findById(orderId)
+              .orElseThrow(()-> new RuntimeException("Order not found!"));
+              if(order.getOrderStatus()==OrderStatus.DELIVERED||order.getOrderStatus()==OrderStatus.SHIPPED){
+                throw new RuntimeException("Order already processed!");
+              }
+             
+              order.setOrderStatus(OrderStatus.CANCELLED);
+              return orderRepository.save(order);
+              
+}
+
 }

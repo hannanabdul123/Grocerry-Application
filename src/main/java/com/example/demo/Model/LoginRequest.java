@@ -1,8 +1,10 @@
 package com.example.demo.Model;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 public class LoginRequest {
 
+    @JsonProperty("userEmail")
     private String userEmail;
+     @JsonProperty("password")
     private String password;
 
     public String getUserEmail() {

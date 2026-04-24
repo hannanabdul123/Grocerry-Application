@@ -7,8 +7,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.demo.Security.JwtAuthFilter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
+
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     public SecurityConfig(JwtAuthFilter jwtAuthFilter){
@@ -19,22 +25,72 @@ public class SecurityConfig {
         http 
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-                
+            
+                // 🌍 PUBLIC PAGES (JSP / HOME)
+    .antMatchers(
+         "/",
+        "/home",
+        "/login",
+        "/signup",
+        "/cart",
+        "/orders",
+        "/css/**",
+        "/js/**",
+        "/admin",
+         "/",
+    "/style.css",
+    "/**/*.css",
+    "/**/*.js",
+    "/**/*.png",
+    "/**/*.jpg",
+    "/**/*.jpeg",
+
+    "/admin-user",
+    "/forgot-password",
+    "/reset-password",
+    "/message",
+    "/message/**"
+   
+    
+         
+                ).permitAll()
             // 🔓 PUBLIC APIs
                 .antMatchers(
-                    "/api/users",
+                    "/api/users/**",
                     "/api/users/login",
-                    "/api/products/allproducts"
+                    "/api/products/allproducts",
+                    "/images/**"
                 ).permitAll()
 
-            // ADMIN ONLY
-            .antMatchers("/api/products/add").hasRole("ADMIN")
+           
+          
+            // Admin APIs
+            .antMatchers("/api/products/add").hasAuthority("ADMIN")
+            .antMatchers("/api/admin/**").hasAuthority("ADMIN")
 
             // AUTHENTICATED USER ONLY
-            .antMatchers("/api/orders/**","/api/cart/**").authenticated()
+            .antMatchers(
+                "/message.jsp",   // ✅ Chat page allow
+                    "/favicon.ico",
+                     "/api/orders/**",
+                     "/api/cart/**",
+                     "/api/invoice/**",
+                     "/api/chat/**"
+                    ).authenticated()
 
+  
             // EVERYTHING ELSE
             .anyRequest().authenticated()
+        )
+         .headers(headers -> headers
+            .frameOptions(frame -> frame.sameOrigin()) // ✅ important
+        )
+        
+        .logout(logout->logout
+            .logoutUrl("/do-logout")
+            .logoutSuccessUrl("/login")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
         )
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

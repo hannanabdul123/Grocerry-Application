@@ -1,0 +1,226 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<html>
+
+<head>
+<title>User Orders</title>
+
+<style>
+.backBtn{
+    background:#3f51b5;
+}
+body{
+font-family:Arial;
+background:#f5f5f5;
+margin:0;
+}
+
+header{
+background:#2e7d32;
+color:white;
+padding:15px;
+}
+
+.container{
+padding:20px;
+}
+
+.cart{
+background:white;
+padding:15px;
+margin:10px;
+border-radius:8px;
+box-shadow:0 0 6px rgba(0,0,0,0.2);
+}
+
+button{
+padding:6px;
+margin:5px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h3>User Orders</h3>
+<button onclick="goBack()">Go Back</button>
+<button class="btn backBtn" onclick="goHome()">
+Back to Home
+</button>
+</header>
+
+<div class="container">
+
+<div id="orders"></div>
+
+</div>
+
+<script>
+function goBack(){
+  window.history.back();
+}
+
+const params =
+new URLSearchParams(window.location.search);
+
+const userId =
+params.get("userId");
+console.log(userId);
+const token =
+localStorage.getItem("token");
+
+
+function loadOrders(){
+
+fetch(
+"/api/admin/users/"+userId+"/orders",
+{
+headers:{
+Authorization:
+"Bearer "+token
+}
+}
+)
+.then(r=>{
+ if(!r.ok){
+   return r.text().then(t=>{throw new Error(t)})
+ }
+ return r.json()
+})
+
+.then(data=>{
+console.log(data);
+
+if(!Array.isArray(data)){
+   data = data.content || data;
+}
+const div =
+document.getElementById("orders");
+
+div.innerHTML="";
+
+data.forEach(o=>{
+console.log("Order =", o);
+const cart =
+document.createElement("div");
+
+cart.className="cart";
+
+cart.innerHTML=
+"<b>OrderId:</b> " + o.id + "<br>" +
+"<b>Total:</b> " + o.totalAmount + "<br>" +
+"<b>Status:</b> " + o.orderStatus + "<br>" +
+"<b>Order Date:</b> " + (o.orderDate || "") + "<br>" +
+
+"<button onclick='ship("+o.id+")'>Ship</button>" +
+"<button onclick='deliver("+o.id+")'>Deliver</button>" +
+"<button onclick='cancelOrder("+o.id+")'>Cancel</button>"
+;
+
+
+div.appendChild(cart);
+
+
+});
+
+})
+.catch(e=>{
+
+console.log("ERROR =", e);
+
+document.getElementById("orders").innerHTML =
+
+"Error : " + e.message;
+
+});
+
+}
+
+
+function ship(id){
+
+fetch(
+"/api/admin/orders/"+id+"/ship",
+{
+method:"PUT",
+headers:{
+Authorization:
+"Bearer "+token
+}
+})
+.then(r=>{
+  if(!r.ok){
+    return r.text().then(t=>{throw new Error(t)})
+  }
+  return r.json()
+})
+.then(()=>loadOrders())
+.catch(e=>{
+  alert(e.message)
+})
+
+}
+
+
+function deliver(id){
+
+fetch(
+"/api/admin/orders/"+id+"/deliver",
+{
+method:"PUT",
+headers:{
+Authorization:
+"Bearer "+token
+}
+})
+.then(r=>{
+  if(!r.ok){
+    return r.text().then(t=>{throw new Error(t)})
+  }
+  return r.json()
+})
+.then(()=>loadOrders())
+.catch(e=>{
+  alert(e.message)
+})
+}
+
+
+function cancelOrder(id){
+
+fetch(
+"/api/admin/orders/"+id+"/cancel",
+{
+method:"PUT",
+headers:{
+Authorization:
+"Bearer "+token
+}
+})
+.then(r=>{
+  if(!r.ok){
+    return r.text().then(t=>{throw new Error(t)})
+  }
+  return r.json()
+})
+.then(()=>loadOrders())
+.catch(e=>{
+  alert(e.message)
+})
+}
+
+function goHome(){
+
+    window.location="/";
+
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>

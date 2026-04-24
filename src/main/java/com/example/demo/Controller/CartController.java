@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import java.net.Authenticator;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,8 @@ import com.example.demo.Model.User;
 import com.example.demo.Repository.ProductRepository;
 import com.example.demo.Repository.UserRepository;
 import com.example.demo.Service.CartService;
+import org.springframework.http.ResponseEntity;
+
 
 @RestController
 @RequestMapping("/api/cart")
@@ -42,12 +45,26 @@ public class CartController {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Cart cart = new Cart();
-        cart.setUser(user);
-        cart.setProduct(product);
-        cart.setQuantity(quantity);
 
-        return cartService.addToCart(cart);
+        return cartService.addToCart(user,product,quantity);
+    }
+
+   @PutMapping("/update/{productId}")
+public Cart updateQty(
+        @PathVariable Long productId,
+        @RequestParam int qty,
+        Authentication authentication) {
+
+    String email = authentication.getName();
+
+    return cartService.updateQuantity(email, productId, qty);
+}
+    @PutMapping("/clear")
+    public ResponseEntity<String> clearCart(Authentication authentication){
+        String email=authentication.getName();
+          cartService.clearCart(email);
+          return ResponseEntity.ok("Cart cleared successfully");
+        
     }
 
     // 👀 View cart
