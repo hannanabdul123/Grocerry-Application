@@ -2,6 +2,7 @@
 # Uses a JDK 21 image from Eclipse Temurin for compilation along with Maven.
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 
+
 # Set the working directory inside the container for the build stage.
 WORKDIR /app
 
@@ -9,6 +10,7 @@ WORKDIR /app
 # pom.xml: Main Maven configuration script.
 COPY pom.xml .
 
+RUN chmod +x mvnw
 # Fetch all dependencies to be cached for faster consecutive builds
 RUN mvn dependency:go-offline -B
 
@@ -19,7 +21,8 @@ COPY src ./src
 # Build the Spring Boot application into an executable JAR.
 # mvn clean package creates the executable JAR.
 # -DskipTests skips running tests during the Docker build, which speeds up the build process.
-RUN mvn clean package -DskipTests
+
+RUN mvn clean package 
 
 # Stage 2: Create the final, lightweight runtime image
 # Uses a JRE 21 image from Eclipse Temurin, which is much smaller than a JDK image.
