@@ -20,6 +20,7 @@ D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\exampl
 D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\Order.java
 D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\PageController.java
 D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Controller\InvoiceController.java
+D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Service\EmailService.java
 D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\OrderStatus.java
 D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\User.java
 D:\Java-Spring-Boot-Programs\Online-Grocery-App-Backend\src\main\java\com\example\demo\Model\Invoice.java

@@ -16,27 +16,35 @@ public class PasswordResetService {
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepo;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;    
     public PasswordResetService(UserRepository userRepository,
             PasswordResetTokenRepository tokenRepo,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            EmailService emailService) {
         this.userRepository = userRepository;
         this.tokenRepo = tokenRepo;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
     
     public void forgotPassword(String userEmail){
+
         System.out.println("Email in Service: "+userEmail);
+
         User user=userRepository.findByUserEmail(userEmail)
         .orElseThrow(()-> new RuntimeException("User not found"));
+
         String token=UUID.randomUUID().toString();
         PasswordResetToken resetToken=new PasswordResetToken();
         resetToken.setToken(token);
         resetToken.setUser(user);
         resetToken.setExpiryTime(LocalDateTime.now().plusMinutes(15));
-        tokenRepo.save(resetToken);
-   String link = "http://localhost:8080/reset-password?token=" + token;
 
-System.out.println("RESET LINK: " + link);
+        tokenRepo.save(resetToken);
+
+   String link = "https://online-grocerry-application-1.onrender.com/forgot-password?token=" + token;
+
+        emailService.sendEmail(userEmail, "Password Reset Request", "Click the link to reset your password: " + link);
 
     }
     public void resetPassword(String token, String newPassword){
