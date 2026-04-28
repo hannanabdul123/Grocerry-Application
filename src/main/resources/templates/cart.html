@@ -1,0 +1,293 @@
+
+    <html>
+
+    <head>
+        <title>My Cart</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+<link rel="stylesheet" href="/style.css">
+       
+
+    </head>
+
+    <body>
+
+        <header>
+                <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+            <!-- 🔥 Nav Links -->
+            <nav id="navLinks">
+                <a href="/">Home</a>
+                <a href="/orders">Orders</a>
+                <a href="#" onclick="logout()">Logout</a>
+
+            </nav>
+
+            <span id="welcome" style="float:right"></span>
+
+
+        </header>
+
+
+        <div id="container">
+
+            <h2>🧺 My Cart</h2>
+
+            <button class="btn backBtn" onclick="goHome()">
+                Back to Home
+            </button>
+      <br>
+      <br>
+      <br>
+            <hr>
+
+            <div id="cartItems"></div>
+
+            <h3 id="total"></h3>
+
+            <button class="btn placeBtn" id="placeOrderBtn" onclick="placeOrder()" style="display:none">
+
+                Place Order
+
+            </button>
+
+            <button class="btn clearBtn" id="clearCartBtn" onclick="clearCart()" style="display:none">
+
+                Clear Cart
+
+            </button>
+
+        </div>
+            <footer>
+            <div class="footer-container">
+
+                <div class="footer-section">
+                    <h3>🛒 Grocery Store</h3>
+                    <p>Fresh groceries delivered at your doorstep</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <div class="fa">
+                        <a href="/">Home</a><br>
+                        <a href="/cart">Cart</a><br>
+                        <a href="/orders">Orders</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <p>Fruits</p>
+                    <p>Vegetables</p>
+                    <p>Dairy</p>
+                    <p>Snacks</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: support@grocery.com</p>
+                    <p>Phone: +91 9876543210</p>
+                </div>
+
+            </div>
+
+            <p class="footer-bottom">© 2026 Grocery Store | All Rights Reserved</p>
+        </footer>
+
+       
+
+
+        <script>
+            function toggleMenu() {
+                const nav = document.getElementById("navLinks");
+                nav.classList.toggle("active");
+            }
+            const name = localStorage.getItem("username");
+
+            if (name) {
+
+                welcome.innerHTML = "👋 " + name;
+
+            }
+
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+
+                alert("Login first");
+                window.location = "/login";
+
+            }
+
+
+            // ================= LOAD CART =================
+
+            fetch('/api/cart/my', {
+
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+
+            })
+                .then(res => res.json())
+                .then(cartItems => {
+
+                    const cartDiv = document.getElementById("cartItems");
+
+                    let grandTotal = 0;
+
+                    if (cartItems.length == 0) {
+
+                        cartDiv.innerHTML = "<p>Your cart is empty</p>";
+                        return;
+
+                    }
+
+                    document.getElementById("placeOrderBtn").style.display = "block";
+                    document.getElementById("clearCartBtn").style.display = "block";
+
+                    cartItems.forEach(item => {
+                        console.log("IMAGE URL IN CART: ", item.product.imageUrl);
+                        let cleanImage = item.product.imageUrl;
+                        if (cleanImage) {
+                            // remove "/uploads/" if present
+                            cleanImage = cleanImage.replace("/upload/", "");
+                        }
+
+                        if (cleanImage && cleanImage.startsWith("/")) {
+                            cleanImage = cleanImage.substring(1);
+                        }
+                        let imageTag = "";
+                        if (cleanImage) {
+                            imageTag = `<img src="/images/${cleanImage}" width="150"/>`;
+
+                        }
+                        const p = item.product;
+
+                        const total = p.price * item.quantity;
+
+                        grandTotal += total;
+
+                        const div = document.createElement("div");
+
+                        div.className = "cart";
+
+                        div.innerHTML = `
+            
+            <h3>${p.name}</h3>
+            ${cleanImage ? imageTag : '<p>No image</p>'}
+            <p class="price">₹ ${p.price}</p>
+
+            <p>Total: ₹ ${total}</p>
+
+            <button class="qtyBtn"
+             onclick="decreaseQty(${p.id},${item.quantity})">-</button>
+
+            ${item.quantity}
+
+            <button class="qtyBtn"
+             onclick="increaseQty(${p.id},${item.quantity})">+</button>
+
+        `;
+
+                        cartDiv.appendChild(div);
+
+                    });
+
+                    document.getElementById("total")
+                        .innerText = "Grand Total: ₹ " + grandTotal;
+
+                });
+
+
+            // ================= UPDATE QTY =================
+
+            function decreaseQty(productId, qty) {
+
+                qty--;
+
+                fetch(`/api/cart/update/${productId}?qty=${qty}`, {
+
+                    method: "PUT",
+
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+
+                })
+                    .then(() => window.location.reload());
+
+            }
+
+
+            function increaseQty(productId, qty) {
+
+                qty++;
+
+                fetch(`/api/cart/update/${productId}?qty=${qty}`, {
+
+                    method: "PUT",
+
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+
+                })
+                    .then(() => window.location.reload());
+
+            }
+
+
+            // ================= CLEAR =================
+
+            function clearCart() {
+
+                fetch('/api/cart/clear', {
+
+                    method: "PUT",
+
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+
+                })
+                    .then(() => window.location.reload());
+
+            }
+
+
+            // ================= ORDER =================
+
+            function placeOrder() {
+
+                fetch('/api/orders/place', {
+
+                    method: "POST",
+
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+
+                })
+                    .then(res => res.json())
+                    .then(o => {
+
+                        alert("Order placed ID " + o.id);
+                        window.location = "/orders";
+
+                    });
+
+            }
+
+
+            function goHome() {
+
+                window.location = "/";
+
+            }
+
+        </script>
+
+    </body>
+
+    </html>
