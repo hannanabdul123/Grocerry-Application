@@ -42,7 +42,7 @@ public class PasswordResetService {
 
         tokenRepo.save(resetToken);
 
-   String link = "https://online-grocerry-application-1.onrender.com/forgot-password?token=" + token;
+   String link = "https://online-grocerry-application-1.onrender.com/reset-password?token=" + token;
 
         emailService.sendEmail(userEmail, "Password Reset Request", "Click the link to reset your password: " + link);
 
