@@ -2,95 +2,237 @@
 
 <head>
 
-<title>My Orders</title>
+    <title>My Orders</title>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<link rel="stylesheet" href="/style.css">
+  <style>
+    #orders{
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 350px));
+        justify-content: center;
+        gap: 20px;
+    }
+    .orderCard{
+      width: 100%;
+        background:#fff;
+        border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+     border-left: 4px solid #4CAF50;
+     
+    }
+    
 
+    .orderCard h3{
+        margin-top: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #1b5e20;
+    margin-bottom: 12px;
+    }
+    .orderCard p {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 10px;
+}
+.payBtn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 10px;
+    margin-right: 10px;
+    transition: background 0.2s;
+}
+.payBtn:hover {
+    background: #388e3c;
+}
+.cancelBtn {
+    background-color: #e53935;
+   
+    
+    padding: 9px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 10px;
+    transition: all 0.2s;
+}
+.cancelBtn:hover {
+      background-color: #e00b07;
+    color: white;
+}
+/* Back Button */
+.backBtn {
+    background: transparent;
+    border: 1.5px solid #4CAF50;
+    color: #4CAF50;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.backBtn:hover {
+    background: #4CAF50;
+    color: #fff;
+}
+
+/* Invoice Link */
+.invoiceLink {
+    display: inline-block;
+    margin-top: 10px;
+    color: #4CAF50;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px dashed #4CAF50;
+    transition: color 0.2s;
+}
+
+.invoiceLink:hover {
+    color: #2e7d32;
+}
+.cancelled {
+    color: #e53935;
+    font-weight: 600;
+}
+
+  </style>
+  <link rel="stylesheet" href="/style.css">
 </head>
 
 
 <body>
 
 
-<header>
-
- <!-- 🔥 Nav Links -->
-            <nav id="navLinks">
-<a href="/">Home</a>
-<a href="/cart">Cart</a>  
-<a href="#" onclick="logout()">Logout</a>
- </nav>
-  <span id="welcome" style="float:right"></span>
-
-
-</header>
+    <header>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <!-- 🔥 Nav Links -->
+        <nav id="navLinks">
+            <a href="/">Home</a>
+            <a href="/cart">Cart</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </nav>
+        <span id="welcome" style="float:right"></span>
 
 
-<div id="container">
-
-<h2>📦 My Orders</h2>
-
-<button class="btn backBtn" onclick="goHome()">
-Back to Home
-</button>
-
-<hr>
-
-<div id="orders"></div>
-
-</div>
+    </header>
 
 
+    <div id="container">
 
-<script>
+        <h2>📦 My Orders</h2>
 
- const name=localStorage.getItem("username");
+        <button class="btn backBtn" onclick="goHome()">
+            Back to Home
+        </button>
+        <br>
+        <br>
+        <hr>
+        <br>
+        <br>
+        <div id="orders"></div>
 
-if(name){
+    </div>
+<footer>
+        <div class="footer-container">
 
-welcome.innerHTML="👋 "+name;
+            <div class="footer-section">
+                <h3>🛒 Grocery Store</h3>
+                <p>Fresh groceries delivered at your doorstep</p>
+            </div>
 
-}
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <div class="fa">
+                    <a href="/">Home</a><br>
+                    <a href="/cart">Cart</a><br>
+                    <a href="/orders">Orders</a>
+                </div>
+            </div>
 
-const token=localStorage.getItem("token");
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <p>Fruits</p>
+                <p>Vegetables</p>
+                <p>Dairy</p>
+                <p>Snacks</p>
+            </div>
 
-if(!token){
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: support@grocery.com</p>
+                <p>Phone: +91 9876543210</p>
+            </div>
 
-    alert("Login first");
-    window.location="/login";
+        </div>
 
-}
+        <p class="footer-bottom">© 2026 Grocery Store | All Rights Reserved</p>
+    </footer>
 
 
-// ================= LOAD ORDERS =================
+    <script>
+      function toggleMenu() {
+            const nav = document.getElementById("navLinks");
+            nav.classList.toggle("active");
+        }
+        const name = localStorage.getItem("username");
 
-fetch('/api/orders/my',{
+        if (name) {
 
-    headers:{
-        'Authorization':'Bearer '+token
-    }
+            welcome.innerHTML = "👋 " + name;
 
-})
-.then(res=>res.json())
-.then(orders=>{
+        }
 
-    const ordersDiv=document.getElementById("orders");
+        const token = localStorage.getItem("token");
 
-    if(orders.length==0){
+        if (!token) {
 
-        ordersDiv.innerHTML="<p>No orders found</p>";
-        return;
+            alert("Login first");
+            window.location = "/login";
 
-    }
+        }
 
-    orders.forEach(order=>{
 
-        let paymentSection="";
+        // ================= LOAD ORDERS =================
 
-        if(order.paymentStatus==="PENDING"
-           && order.orderStatus==="PLACED"){
+        fetch('/api/orders/my', {
 
-            paymentSection=`
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+
+        })
+            .then(res => res.json())
+            .then(orders => {
+
+                const ordersDiv = document.getElementById("orders");
+
+                if (orders.length == 0) {
+
+                    ordersDiv.innerHTML = "<p>No orders found</p>";
+                    return;
+
+                }
+
+                orders.forEach(order => {
+
+                    let paymentSection = "";
+
+                    if (order.paymentStatus === "PENDING"
+                        && order.orderStatus === "PLACED") {
+
+                        paymentSection = `
 
                 <button class="btn payBtn"
                  onclick="payNow(${order.id})">
@@ -104,20 +246,20 @@ fetch('/api/orders/my',{
 
             `;
 
-        }
+                    }
 
-        else if(order.orderStatus==="CANCELLED"){
+                    else if (order.orderStatus === "CANCELLED") {
 
-            paymentSection=
-            `<span style="color:red">
+                        paymentSection =
+                            `<span class="cancelled">
                 CANCELLED
              </span>`;
 
-        }
+                    }
 
-        else{
+                    else {
 
-            paymentSection=`
+                        paymentSection = `
 
                 <span style="color:green">
                     Paid ✅
@@ -126,20 +268,20 @@ fetch('/api/orders/my',{
                 <br>
                  <br>
 
-                <a href="/invoice?orderid=${order.id}">
+                <a class="invoiceLink" href="/invoice?orderid=${order.id}">
                 View Invoice
                 </a>
 
             `;
 
-        }
+                    }
 
 
-        const div=document.createElement("div");
+                    const div = document.createElement("div");
 
-        div.className="orderCard";
+                    div.className = "orderCard";
 
-        div.innerHTML=`
+                    div.innerHTML = `
 
             <h3>Order #${order.id}</h3>
 
@@ -157,72 +299,72 @@ fetch('/api/orders/my',{
 
         `;
 
-        ordersDiv.appendChild(div);
+                    ordersDiv.appendChild(div);
 
-    });
+                });
 
-});
-
-
-// ================= CANCEL =================
-
-function cancelNow(orderId){
-
-if(!confirm("Cancel order "+orderId+" ?"))
-return;
-
-fetch('/api/orders/'+orderId+'/cancel',{
-
-    method:"PUT",
-
-    headers:{
-        'Authorization':'Bearer '+token
-    }
-
-})
-.then(()=>location.reload());
-
-}
+            });
 
 
+        // ================= CANCEL =================
 
-// ================= PAY =================
+        function cancelNow(orderId) {
 
-function payNow(orderId){
+            if (!confirm("Cancel order " + orderId + " ?"))
+                return;
 
-if(!confirm("Pay order "+orderId+" ?"))
-return;
+            fetch('/api/orders/' + orderId + '/cancel', {
 
-fetch('/api/orders/'+orderId+'/pay',{
+                method: "PUT",
 
-    method:"PUT",
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
 
-    headers:{
-        'Authorization':'Bearer '+token
-    }
+            })
+                .then(() => location.reload());
 
-})
-.then(()=>location.reload());
-
-}
+        }
 
 
 
-function goHome(){
+        // ================= PAY =================
 
-    window.location="/";
+        function payNow(orderId) {
 
-}
-function logout(){
+            if (!confirm("Pay order " + orderId + " ?"))
+                return;
 
-    localStorage.clear();
-    sessionStorage.clear();
+            fetch('/api/orders/' + orderId + '/pay', {
 
-    alert("Logged out");
-    window.location="/login";
-}
+                method: "PUT",
 
-</script>
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+
+            })
+                .then(() => location.reload());
+
+        }
+
+
+
+        function goHome() {
+
+            window.location = "/";
+
+        }
+        function logout() {
+
+            localStorage.clear();
+            sessionStorage.clear();
+
+            alert("Logged out");
+            window.location = "/login";
+        }
+
+    </script>
 
 
 </body>

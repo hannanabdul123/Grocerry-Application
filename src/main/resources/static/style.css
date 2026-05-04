@@ -10,10 +10,10 @@ button {
 
 body {
     font-family: Arial, sans-serif;
-    background: #f5f5f5;
+    background: linear-gradient(to right, #f1f8e9, #e8f5e9);
     margin: 0;
-    
-     min-height: 100vh;  
+
+    min-height: 100vh;
 }
 
 
@@ -24,6 +24,7 @@ header {
 
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     justify-content: space-between;
     position: relative;
     gap: 10px;
@@ -35,7 +36,7 @@ header {
     flex-direction: column;
     background: #2e7d32;
 
-    position: absolute;
+    position: static;
     top: 60px;
     left: 0;
     width: 100%;
@@ -60,6 +61,7 @@ header a {
     border: none;
     color: white;
     font-size: 22px;
+
     cursor: pointer;
 }
 
@@ -68,6 +70,14 @@ header a {
 }
 
 @media (min-width: 768px) {
+
+    header {
+        padding: 20px;
+    }
+
+    .product-image {
+        height: 200px;
+    }
 
     .menu-toggle {
         display: none;
@@ -102,17 +112,17 @@ header a {
 
 }
 
-.cart img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 5px;
-    margin: 5px 0;
+#searchInput {
+    order: 3;
 }
 
+
 #welcome {
+    font-weight: bold;
     margin-left: auto;
-    margin-right: 10px;
+    padding-right: 20px;
+ order: 4;
+
 }
 
 #container {
@@ -129,21 +139,33 @@ header a {
 
 #productList {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
     gap: 20px;
+    justify-content: center;
 }
 
 
 .cart {
     will-change: transform;
     backface-visibility: hidden;
-    background: white;
-    width: 220px;
-    margin: 10px;
+
+
+    margin: 0;
+    background: #ffffff;
+
     padding: 15px;
-    border-radius: 8px;
+    box-sizing: border-box;
+    border-radius: 12px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
+}
+
+.product-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 5px;
+
 }
 
 /* ================= ADD PRODUCT FORM ================= */
@@ -220,7 +242,7 @@ header a {
 }
 
 .cart:hover {
-    transform: translateY(-5px);
+    transform: translateY(-10px);
 }
 
 .price {
@@ -330,8 +352,8 @@ footer {
     background: #2e7d32;
     color: white;
     padding: 20px;
-   margin-top: 220px;
-    
+    margin-top: 220px;
+
     width: 100%;
 }
 
@@ -372,37 +394,36 @@ footer {
 
 /* 📱 Mobile (default) → already handled */
 
-/* 📲 Tablet */
-@media (min-width: 768px) {
 
-    header {
-        padding: 20px;
-    }
-
-    .cart img {
-        height: 180px;
-    }
-}
 
 /* 💻 Desktop */
 @media (min-width: 1024px) {
 
     #container {
+        width: 90%;
+    }
+
+    .usercontainer {
         width: 85%;
     }
 
-    .cart img {
-        height: 200px;
+    #searchInput {
+        max-width: 250px;
     }
+
+    #welcome {
+        font-size: 16px;
+    }
+
+
 }
 
 
 /*Cart page specific styles*/
 #cartItems {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
     gap: 20px;
-    /* 🔥 spacing between cards */
     justify-content: center;
 }
 
@@ -468,9 +489,7 @@ footer {
 
 
 
-#welcome {
-    font-weight: bold;
-}
+
 
 .Login {
 
@@ -538,63 +557,6 @@ a {
     font-weight: bold;
 }
 
-.orderCard {
-    background: white;
-    width: 240px;
-    margin: 10px;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s;
-    text-align: center;
-}
-
-.orderCard:hover {
-    transform: translateY(-5px);
-}
-
-.orderCard p {
-    margin: 6px 0;
-    font-size: 14px;
-}
-
-#orders {
-
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    /* ✅ center cards */
-    gap: 20px;
-    /* ✅ spacing */
-    margin-top: 20px;
-}
-
-.btn {
-    padding: 8px;
-    border: none;
-    cursor: pointer;
-    margin-top: 5px;
-    color: white;
-    border-radius: 5px;
-}
-
-.payBtn {
-    background: #4caf50;
-}
-
-.payBtn:hover {
-    background: #1b5e20;
-    transform: scale(1.05);
-}
-
-.cancelBtn {
-    background: #f44336;
-}
-
-.cancelBtn:hover {
-    background: #9a0007;
-    transform: scale(1.05);
-}
 
 .backBtn {
     background: #3f51b5;
@@ -620,12 +582,17 @@ a {
 /* Users Grid */
 .users {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+     grid-template-columns: repeat(auto-fit, 250px);
     gap: 20px;
+
+    align-items: start;
+    justify-content: center;
 }
 
-/* User Card */
-.card {
+/* inside of user cart */
+.user-card {
+    width: 100%;
+    
     background: white;
     padding: 15px;
     border-radius: 10px;
@@ -637,17 +604,17 @@ a {
     transition: transform 0.2s;
 }
 
-.card:hover {
+.user-card:hover {
     transform: translateY(-5px);
 }
 
 /* Text spacing */
-.card b {
+.user-card b {
     color: #333;
 }
 
 /* Buttons common */
-.card button {
+.user-card button {
     width: 100%;
     padding: 8px;
     margin-top: 8px;
@@ -678,9 +645,11 @@ a {
     background: #e65100;
     transform: scale(1.05);
 }
-.view{
+
+.view {
     background: #1976d2;
 }
+
 .view:hover {
     background: #0d47a1;
     transform: scale(1.05);
@@ -695,6 +664,7 @@ a {
     background: #9a0007;
     transform: scale(1.05);
 }
+
 /* ✅ Chat Button */
 #chatBtn {
     position: fixed;
@@ -708,7 +678,7 @@ a {
     cursor: pointer;
     font-size: 16px;
     z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 #chatBtn:hover {
@@ -725,11 +695,11 @@ a {
     height: 480px;
     background: white;
     border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     z-index: 999;
     overflow: hidden;
 
-   
+
 }
 
 /* ✅ Visible hone pe */
@@ -748,4 +718,15 @@ a {
     font-size: 14px;
     z-index: 10;
     color: white;
+}
+
+#searchInput {
+    flex: 1;
+    min-width: 150px;
+    max-width: 250px;
+    padding: 6px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+
 }

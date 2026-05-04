@@ -1,11 +1,145 @@
 <html>
 
 <head>
-
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Login | Grocery App</title>
 
 
-     <link rel="stylesheet" href="/style.css">
+    <style>
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #f1f8e9, #e8f5e9);
+    min-height: 100vh;
+}
+
+/* HEADER */
+header {
+    background: #2e7d32;
+    color: white;
+    padding: 15px 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#welcome {
+    font-weight: bold;
+}
+
+/* LOGIN WRAPPER */
+.Login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: calc(100vh - 70px);
+    padding: 20px;
+}
+
+/* LOGIN CARD */
+.Login-cart {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+
+    width: 100%;
+    max-width: 350px;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+/* HEADING */
+.Login-cart h2 {
+    margin-bottom: 20px;
+    color: #2e7d32;
+}
+
+/* INPUTS */
+.Login-cart input[type="email"],
+.Login-cart input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* CHECKBOX */
+.Login-cart input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* BUTTON */
+.logBtn {
+    width: 100%;
+    padding: 10px;
+
+    background: #2e7d32;
+    color: white;
+    border: none;
+
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.logBtn:hover {
+    background: #1b5e20;
+    transform: scale(1.03);
+}
+
+/* MESSAGE */
+.msg {
+    color: red;
+    margin-top: 10px;
+}
+
+/* LINKS */
+.Login-cart a {
+    color: #2e7d32;
+    text-decoration: none;
+}
+
+.Login-cart a:hover {
+    text-decoration: underline;
+}
+
+/* 📱 MOBILE FIX */
+@media (max-width: 480px) {
+    
+    .Login-cart {
+        padding: 20px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+}
+
+</style>
 
 </head>
 
