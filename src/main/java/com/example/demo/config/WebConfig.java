@@ -10,6 +10,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/upload/");
+               .addResourceLocations("file:D:/Java-Spring-Boot-Programs/Online-Grocery-App-Backend/upload/");
     }
 }

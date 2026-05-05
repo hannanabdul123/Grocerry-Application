@@ -21,6 +21,7 @@ import com.example.demo.Model.PaymentStatus;
 import com.example.demo.Model.Product;
 import com.example.demo.Repository.OrderRepository;
 import com.example.demo.Repository.ProductRepository;
+import com.example.demo.Service.ImageService;
 import com.example.demo.Service.OrderService;
 import com.example.demo.Service.ProductService;
 
@@ -47,18 +48,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 @PreAuthorize("hasAuthority('ADMIN')")
 
 public class AdminOrderController {
+  private final ImageService imageService; 
    private final ProductService productService;
     private OrderService orderService;
      private OrderRepository orderRepository;
     private ProductRepository repo;
     public AdminOrderController(
             OrderService orderService,
-            OrderRepository orderRepository,ProductService productService,ProductRepository repo) {
+            OrderRepository orderRepository,ProductService productService,ProductRepository repo,ImageService imageService) {
 
         this.orderService = orderService;
         this.orderRepository = orderRepository;
             this.productService = productService;
             this.repo = repo;
+            this.imageService=imageService;
     }
     @GetMapping("/users/{userId}/orders")
     public List<Order> getOrders(@PathVariable Long userId) {
@@ -105,27 +108,22 @@ public class AdminOrderController {
 
   @PostMapping("/add")
     public Product add(@RequestParam String name,@RequestParam double price,@RequestParam String description,@RequestParam String category,@RequestParam("image") MultipartFile file) throws IOException{
-       
-       String filename=UUID.randomUUID()+"_"+ file.getOriginalFilename();
-       Path path=Paths.get("upload");
-       if(!Files.exists(path)){
-       Files.createDirectories(path);
-       }
-       Path filePath=path.resolve(filename);
-    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-    
-      // Files.write(filePath,file.getBytes());
         Product product = new Product();
+       if (file != null && !file.isEmpty()) {
+      String filename=imageService.uploadImage(file);
+      System.out.println("IMAGE URL = " + filename);
+      product.setImageUrl(filename);
+       }
+       
+       
         System.out.println("NAME = " + name);
-System.out.println("PRICE = " + price);
-System.out.println("DESC = " + description);
-System.out.println("FILE = " + file.getOriginalFilename());
-System.out.println("CATEGORY = " + category);
     product.setName(name);
     product.setPrice(price);
     product.setDescription(description);
     product.setCategory(category);
-    product.setImageUrl(filename);
+
+    
+    
         return productService.addProduct(product);
     }
      @DeleteMapping("/delete/{product_id}")
@@ -138,21 +136,16 @@ public Product updateProduct(@PathVariable Long product_id, @RequestParam String
     @RequestParam double price, @RequestParam String description, @RequestParam String category,
     @RequestParam("image") MultipartFile file 
 ) throws IOException{
-   Product product2=productService.getByIProduct(product_id);  
+   Product product2=productService.getByProductID(product_id);  
     product2.setName(name);
     product2.setPrice(price);
-
+   
     product2.setDescription(description);
     product2.setCategory(category);
     if(file!=null && !file.isEmpty()){
-        String filename=UUID.randomUUID()+"_"+ file.getOriginalFilename();
-       Path path=Paths.get("upload");
-       if(!Files.exists(path)){
-       Files.createDirectories(path);
-       }
-       Path filePath=path.resolve(filename);
-     Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-    product2.setImageUrl(filename);     
+        String imageUrl = imageService.uploadImage(file);
+        product2.setImageUrl(imageUrl);
+    product2.setImageUrl(imageUrl);     
 
 }
 return productService.addProduct(product2);

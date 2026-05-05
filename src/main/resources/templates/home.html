@@ -4,7 +4,7 @@
     <title>Online Grocery App</title>
 
     <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="/style.css">
 
@@ -76,7 +76,7 @@
             </form>
         </div>
         <br>
-       
+
         <div id="productList"></div>
 
     </div>
@@ -161,7 +161,7 @@
 
         function closeForm() {
             const formDiv = document.getElementById("formDiv");
-            formDiv.classList.toggle("hidden");
+             formDiv.classList.add("hidden");
 
 
         }
@@ -245,7 +245,7 @@
 
 
         }
-
+//Loads Users
         function loadUsers() {
 
             if (role !== "ADMIN") return;
@@ -280,6 +280,7 @@
                 });
         }
 
+        // load messages
         function loadMessages() {
             if (!selectedUserId) return;
             if (!token) return;
@@ -372,7 +373,7 @@
 
             updateProductId = product.product_id;
 
-            document.getElementById("formDiv").style.display = "block";
+            document.getElementById("formDiv").classList.remove("hidden");
 
             const form = document.getElementById("productForm");
             form.reset();
@@ -420,20 +421,19 @@
                     products.forEach(product => {
                         console.log("IMAGE URL =", product.imageUrl);
 
-                        let cleanImage = product.imageUrl;
-                        if (cleanImage) {
-                            // remove "/uploads/" if present
-                            cleanImage = cleanImage.replace("/upload/", "");
+                        let imageUrl = product.imageUrl;
+
+                        // 👉 If no image OR not Cloudinary URL → use placeholder
+                        if (!imageUrl || !imageUrl.startsWith("http")) {
+                            imageUrl = "/images/Placeholder.jpg";
                         }
 
-                        if (cleanImage && cleanImage.startsWith("/")) {
-                            cleanImage = cleanImage.substring(1);
-                        }
-                        let imageTag = "";
-                        if (cleanImage) {
-                            imageTag = `<img src="/images/${cleanImage}" class="product-image" loading="lazy">`;
-                        }
-
+                        let imageTag = `<img 
+    src="${imageUrl}" 
+    class="product-image"
+    loading="lazy"
+    onerror="this.src='/images/Placeholder.jpg'"
+>`;
                         let deleteBtn = "";
 
                         // ✅ ADMIN DELETE BUTTON
